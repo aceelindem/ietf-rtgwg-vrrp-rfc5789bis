@@ -8,7 +8,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <rfc
     xmlns:xi="http://www.w3.org/2001/XInclude"
     category="std"
-    docName="draft-ietf-rtgwg-vrrp-rfc5798bis-13"
+    docName="draft-ietf-rtgwg-vrrp-rfc5798bis-14"
     ipr="trust200902"
     obsoletes="5798"
     updates=""
@@ -72,11 +72,9 @@ please see http://xml.resource.org/authoring/README.html. -->
     <abstract>
       <t>
         This document defines version 3 of the Virtual Router Redundancy Protocol (VRRP)
-        for IPv4 and IPv6. It is based on VRRP (version 2) for IPv4 that is defined in
-        RFC 3768 and in "Virtual Router Redundancy Protocol for IPv6",
-        and obsoletes the previous
-        specification of this version documented in RFC 5798.  VRRP specifies an
-        election protocol that dynamically assigns responsibility for a
+        for IPv4 and IPv6. It obsoletes RFC 5798 which previously specified VRRP (version 3).
+        RFC 5798 obsoleted RFC 3768 which specified VRRP (version 2) for IPv4.
+        VRRP specifies an election protocol that dynamically assigns responsibility for a
         Virtual Router to one of the VRRP Routers on a LAN.  The VRRP Router
         controlling the IPv4 or IPv6 address(es) associated with a Virtual
         Router is called the Active Router, and it forwards packets sent to these
@@ -95,13 +93,6 @@ please see http://xml.resource.org/authoring/README.html. -->
         switchover to Backup Routers than can be obtained with standard IPv6
         Neighbor Discovery mechanisms.
       </t>
-      <t>
-	The VRRP terminology has been updated to conform to inclusive language
-        guidelines for IETF technologies.
-        The IETF has designated National Institute of Standards and Technology (NIST)
-        "Guidance for NIST Staff on Using Inclusive Language in Documentary Standards"
-        for its inclusive language guidelines.
-      </t>
     </abstract>
   </front>
   <middle>
@@ -109,10 +100,10 @@ please see http://xml.resource.org/authoring/README.html. -->
       <name>Introduction</name>
       <t>
         This document defines version 3 of the Virtual Router Redundancy Protocol (VRRP)
-        for IPv4 and IPv6. It is based on VRRP (version 2) for IPv4 that is defined in
-        <xref target="RFC3768"/> and in "Virtual Router Redundancy Protocol for IPv6",
-        and obsoletes the previous specification of this version documented in
-        <xref target="VRRP-IPv6"/>.  VRRP specifies an election protocol that dynamically
+        for IPv4 and IPv6. It obsoletes RFC 5798 <xref target="RFC5798"/> which previously
+        specified VRRP (version 3). RFC 5798 obsoleted RFC 3768 <xref target="RFC3768"/>
+        which specified VRRP (version 2) for IPv4.
+        VRRP specifies an election protocol that dynamically
         assigns responsibility for a Virtual Router
         (refer to <xref target="sect-1.7"/>) to one of the VRRP
         routers on a LAN.  The VRRP Router controlling the IPv4 or IPv6
@@ -128,14 +119,6 @@ please see http://xml.resource.org/authoring/README.html. -->
         responsibility should the Active Router become unavailable.
       </t>
       <t>
-	The VRRP terminology has been updated to conform to inclusive language
-        guidelines for IETF technologies.
-        The IETF has designated National Institute of Standards and Technology (NIST)
-        "Guidance for NIST Staff on Using Inclusive Language in Documentary Standards"
-        <xref target="NISTIR8366"/> for its inclusive language guidelines.
-        This document obsoletes VRRP Version 3 <xref target="RFC5798"/>.
-      </t>
-      <t>
         VRRP provides a function similar to the proprietary protocols "Hot Standby Router Protocol (HSRP)"
         <xref target="RFC2281"/> and "IP Standby Protocol" <xref target="IPSTB"/>.
       </t>
@@ -145,6 +128,13 @@ please see http://xml.resource.org/authoring/README.html. -->
           The following changes have been made from RFC 5798:
         </t>
         <ol spacing="normal" type="1">
+          <li>
+	    The VRRP terminology has been updated to conform to inclusive language
+            guidelines for IETF technologies.
+            The IETF has designated National Institute of Standards and Technology (NIST)
+            "Guidance for NIST Staff on Using Inclusive Language in Documentary Standards"
+            <xref target="NISTIR8366"/> for its inclusive language guidelines.
+          </li>
           <li>
             The term for the VRRP Router assuming forwarding responsibility has been changed
             to "Active Router" to be consistent with IETF inclusive terminology. Additionally,
@@ -181,7 +171,7 @@ please see http://xml.resource.org/authoring/README.html. -->
             Miscellaneous editorial changes were made for readability.
           </li>
           <li>
-            The IANA considerations section was augmented to include all the IPv4/IPv6
+            The IANA Considerations section was augmented to include all the IPv4/IPv6
             multicast address allocations and Ethernet MAC address allocations.
           </li>
         </ol>
@@ -784,6 +774,8 @@ IPvX A ----->*             *<---------- IPvX B
  +                                                               +
  |                                                               |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+           IPv4/IPv6 VRRP Advertisement Packet Format
  ]]></artwork>
 	<section anchor="sect-5.1.1">
 	  <name>IPv4 Field Descriptions</name>
@@ -906,7 +898,7 @@ IPvX A ----->*             *<---------- IPvX B
 	    VRRP Routers backing up a Virtual Router MUST use priority values
             between 1-254 (decimal).  The default priority value for VRRP Routers
             backing up a Virtual Router is 100 (decimal). Refer to <xref target="sect-8.3.2"/>
-            for recommendations on setting the priority. 
+            for recommendations on setting the priority.
           </t>
 	  <t>
 	    The priority value zero (0) has special meaning, indicating that the
@@ -920,6 +912,7 @@ IPvX A ----->*             *<---------- IPvX B
 	  <t>
 	    This is the number of either IPv4 addresses or IPv6 addresses
             contained in this VRRP advertisement.  The minimum value is 1.
+            If the received count is 0, the VRRP advertisement is ignored.
           </t>
 	</section>
 	<section anchor="sect-5.2.6">
@@ -954,8 +947,8 @@ IPvX A ----->*             *<---------- IPvX B
           </t>
 	  <t>
 	    For both the IPv4 and IPv6 address families, the checksum is the
-            16-bit one's complement of the one's complement sum of the entire VRRP
-            message starting with the version field. For computing the checksum,
+            16-bit one's complement of the one's complement sum of the VRRP
+            message. For computing the checksum,
             the checksum field is set to zero.  See RFC1071 for more detail
             <xref target="RFC1071"/>.
           </t>
@@ -1069,8 +1062,8 @@ IPvX A ----->*             *<---------- IPvX B
 	      ADVERTISEMENTS received from the Active
               Router (centiseconds).  This value is saved by
               Virtual Routers in the Backup state and
-              used to compute Skew_Time and
-              Active_Down_Interval.  The initial value
+              used to compute Skew_Time (as specfied <xref target="sect-8.3.2"/>)
+              and Active_Down_Interval.  The initial value
               is the same as Advertisement_Interval.
 	    </t>
 	  </dd>
@@ -1568,7 +1561,8 @@ MAY indicate via network management that an error occurred.
         <name>Virtual Router MAC Address</name>
         <t>
           The Virtual Router MAC address associated with a Virtual Router is an
-          IEEE 802 MAC Address in the following format:
+          IEEE 802 MAC Address <xref target="I-D.ietf-intarea-rfc7042bis"/> in the
+          following format:
         </t>
         <t>
           IPv4 case: 00-00-5E-00-01-{VRID} (in hex, in Internet-standard bit-
@@ -1752,10 +1746,10 @@ MAY indicate via network management that an error occurred.
           </ul>
           <t>
             Note that on a restarting Active Router where the VRRP protected
-            address is an interface address, i.e., the address owner, duplicate
-            address detection (DAD) may fail, as the Backup Router may answer
-            that it owns the address.  One solution is to not run DAD in this
-            case.
+            address is an interface address, i.e., the address owner, Duplicate
+            Address Detection may fail, as the Backup Router may answer
+            that it owns the address.  One solution is to not run Duplicate
+            Address Detection in this case.
           </t>
         </section>
         <section anchor="sect-8.2.3">
@@ -1763,14 +1757,14 @@ MAY indicate via network management that an error occurred.
           <t>
             When a Backup VRRP Router has become Active Router for a Virtual Router, it
             is responsible for sending Router Advertisements for the Virtual
-            Router as specified in <xref target="sect-6.4.3"/>.  The Backup Routers must be
+            Router as specified in <xref target="sect-6.4.3"/>.  The Backup Routers MUST be
             configured to send the same Router Advertisement options as the
             address owner.
           </t>
           <t>
             Router Advertisement options that advertise special services, e.g.,
             Home Agent Information Option, that are present in the address owner
-            should not be sent by the address owner unless the Backup Routers are
+            SHOULD NOT be sent by the address owner unless the Backup Routers are
             prepared to assume these services in full and have a complete and
             synchronized database for this service.
           </t>
@@ -1802,7 +1796,7 @@ MAY indicate via network management that an error occurred.
             in a forwarding loop that is only terminated when the IPvX TTL expires.
           </t>
           <t>
-            One mechanism for VRRP Routers to these forwarding loops is to add/delete
+            One mechanism for VRRP Routers to avoid these forwarding loops is to add/delete
             a host reject route for each non-owned IPvX address when transitioning
             to/from Active state.
           </t>
@@ -2016,8 +2010,8 @@ MAY indicate via network management that an error occurred.
       </t>
       <t>
         Thanks to Stewart Bryant, Sasha Vainshtein, Pascal Thubert, Alexander Okonnikov,
-        Ben Niven-Jenkins, Tim Chown, and Malisa Vucinic for comments on the
-        current document (RFC 5798 BIS).
+        Ben Niven-Jenkins, Tim Chown, Malisa Vucinic, Russ White, and Donald Eastlake
+        for comments on the current document (RFC 5798 BIS).
         Thanks to Gyan Mishra, Paul Congdon, and Jon Rosen for discussions related to the removal
         of legacy technology appendices. Thanks to Dhruv Dhody and Donald Eastlake for
         comments and suggestions for improving the IANA section. Thanks to Sasha Vainshtein
@@ -2032,6 +2026,10 @@ MAY indicate via network management that an error occurred.
     <section anchor="IANA" numbered="true" toc="default">
       <name>IANA Considerations</name>
       <t>
+        IANA is requested to update all IANA Registry references to <xref target="RFC5798"/>
+        to be references to [RFCXXXX]. The individual IANA references are listed below.
+      </t>
+      <t>
         The value 112 is assigned to VRRP in the Assigned Internet Protocol Numbers Registry.
       </t>
       <t>
@@ -2045,7 +2043,7 @@ MAY indicate via network management that an error occurred.
         scope multicast address FF02:0:0:0:0:0:0:12 for VRRP for IPv6.
       </t>
       <t>
-        In the "IANA MAC ADDRESS BLOCK" registry <xref target="RFC7042"/>,
+        In the "IANA MAC ADDRESS BLOCK" registry <xref target="I-D.ietf-intarea-rfc7042bis"/>,
         IANA has assigned blocks of Ethernet unicast addresses as
         follows (in hexadecimal):
       </t>
@@ -2063,9 +2061,9 @@ MAY indicate via network management that an error occurred.
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4443.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4861.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5771.xml"/>
-    <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7042.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8200.xml"/>
+    <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-intarea-rfc7042bis.xml"/>
 </references>
 <references>
 <name>Informative References</name>
