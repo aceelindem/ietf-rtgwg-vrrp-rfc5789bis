@@ -326,7 +326,7 @@ please see http://xml.resource.org/authoring/README.html. -->
               Identifier and either a set of associated
               IPv4 addresses or a set of associated IPv6
               addresses across a common LAN.  A VRRP Router
-              serve as a Backup Router for one or more
+              can serve as a Backup Router for one or more
               Virtual Routers.
 	    </t>
 	  </dd>
