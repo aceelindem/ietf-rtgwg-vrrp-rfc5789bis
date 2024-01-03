@@ -8,7 +8,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <rfc
     xmlns:xi="http://www.w3.org/2001/XInclude"
     category="std"
-    docName="draft-ietf-rtgwg-vrrp-rfc5798bis-17"
+    docName="draft-ietf-rtgwg-vrrp-rfc5798bis-18"
     ipr="trust200902"
     obsoletes="5798"
     updates=""
@@ -668,7 +668,7 @@ Legend:
         </t>
         <t>
           The IPvX example above shows a Virtual Router configured to cover the
-          IPv4 address owned by Router-1 (VRID=1, IPvX_Address=A).  When VRRP is
+          IPvX address owned by Router-1 (VRID=1, IPvX_Address=A).  When VRRP is
           enabled on Router-1 for VRID=1, it will assert itself as Active Router, with
           priority = 255, since it is the IPvX address owner for the Virtual
           Router IPvX address.  When VRRP is enabled on Router-2 for VRID=1, it will
@@ -1467,7 +1467,7 @@ While in Active state, a VRRP Router MUST do the following:
 
           * else // new Active Router logic
 
-            @ Discard ADVERTISEMENT
+             @ Discard the ADVERTISEMENT
 
              @ Send an ADVERTISEMENT immediately to assert
                Active state to the sending VRRP Router and
@@ -1801,7 +1801,7 @@ MAY indicate via network management that an error occurred.
             IPv6 all-routers multicast address (ff02::2), they will be received. Unsolicited
             Neighbor Advertisements are sent both in the case where the link-level addresses
             change <xref target="RFC4861"/> and for gratuitous neighbor discovery by first hop
-            routers <xref target="RFC9131"/>. Additional configuration MAY be required in order
+            routers <xref target="RFC9131"/>. Additional configuration may be required in order
             for Unsolicited Neighbor Advertisements to update the corresponding neighbor cache.
           </t>
         </section>
