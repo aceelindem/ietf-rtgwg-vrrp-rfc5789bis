@@ -8,7 +8,7 @@ please see http://xml.resource.org/authoring/README.html. -->
 <rfc
     xmlns:xi="http://www.w3.org/2001/XInclude"
     category="std"
-    docName="draft-ietf-rtgwg-vrrp-rfc5798bis-16"
+    docName="draft-ietf-rtgwg-vrrp-rfc5798bis-17"
     ipr="trust200902"
     obsoletes="5798"
     updates=""
@@ -247,7 +247,7 @@ please see http://xml.resource.org/authoring/README.html. -->
           routers by receiving Router Advertisements sent using the IPv6
           Neighbor Discovery (ND) protocol <xref target="RFC4861"/>.
           The Router Advertisements are periodically multicast
-          at a rate such that the hosts will normally take more
+          at a rate such that the hosts can take more
           than 10 seconds to learn the default routers on a LAN.
           They are not sent frequently enough to rely on the absence
           of the Router Advertisement to detect router failures.
@@ -830,7 +830,7 @@ IPvX A ----->*             *<---------- IPvX B
 	    <name>TTL</name>
 	    <t>
 	      The TTL MUST be set to 255.  A VRRP Router receiving a packet with
-              the TTL not equal to 255 MUST discard the packet.
+              the TTL not equal to 255 MUST discard the packet <xref target="RFC5082"/>.
             </t>
 	  </section>
 	  <section anchor="sect-5.1.1.4">
@@ -856,7 +856,7 @@ IPvX A ----->*             *<---------- IPvX B
               The IPv6 multicast address assigned by the IANA for VRRP is:
             </t>
 	    <t indent="4">
-	      FF02:0:0:0:0:0:0:12
+	      ff02:0:0:0:0:0:0:12
 	    </t>
 	    <t>
 	      This is a link-local scope multicast address.  Routers MUST NOT
@@ -868,7 +868,8 @@ IPvX A ----->*             *<---------- IPvX B
 	    <name>Hop Limit</name>
 	    <t>
 	      The Hop Limit MUST be set to 255.  A VRRP Router receiving a packet
-              with the Hop Limit not equal to 255 MUST discard the packet.
+              with the Hop Limit not equal to 255 MUST discard the
+              packet <xref target="RFC5082"/>.
             </t>
 	  </section>
 	  <section anchor="sect-5.1.2.4">
@@ -938,7 +939,7 @@ IPvX A ----->*             *<---------- IPvX B
 	  <t>
 	    This is the number of either IPv4 addresses or IPv6 addresses
             contained in this VRRP advertisement.  The minimum value is 1.
-            If the received count is 0, the VRRP advertisement is ignored.
+            If the received count is 0, the VRRP advertisement MUST be ignored.
           </t>
 	</section>
 	<section anchor="sect-5.2.6">
@@ -1395,9 +1396,9 @@ While in Active state, a VRRP Router MUST do the following:
          address for the IPv6 address(es) associated with the
          Virtual Router.
 
-       + It MUST respond to ND Neighbor Solicitation message for
-         the IPv6 address(es) associated with the Virtual
-         Router.
+       + It MUST respond to ND Neighbor Solicitation messages (with
+         the Router Flag (R) set) for the IPv6 address(es) associated
+         with the Virtual Router.
 
        + It MUST send ND Router Advertisements for the Virtual
          Router.
@@ -1447,7 +1448,9 @@ While in Active state, a VRRP Router MUST do the following:
             than the local Priority or the Priority in the
             ADVERTISEMENT is equal to the local Priority and
             the primary IPvX Address of the sender is greater
-            than the local primary IPvX Address, then:
+            than the local primary IPvX Address (based on an
+            unsigned integer comparison of the IPvX addresses in
+            network-byte order), then:
 
              @ Cancel Adver_Timer
 
@@ -1634,7 +1637,7 @@ MAY indicate via network management that an error occurred.
         <section anchor="sect-8.1.1">
           <name>ICMP Redirects</name>
           <t>
-            ICMP redirects can be used normally when VRRP is running between a
+            ICMP redirects can be used normally when VRRP is running among a
             group of routers.  This allows VRRP to be used in environments where
             the topology is not symmetric.
           </t>
@@ -1650,7 +1653,7 @@ MAY indicate via network management that an error occurred.
           </t>
           <t>
             It may be useful to disable redirects for specific cases where VRRP
-            is being used to load-share traffic between a number of routers in a
+            is being used to load-share traffic among a number of routers in a
             symmetric topology.
           </t>
         </section>
@@ -1708,7 +1711,7 @@ MAY indicate via network management that an error occurred.
         <section anchor="sect-8.2.1">
           <name>ICMPv6 Redirects</name>
           <t>
-            ICMPv6 redirects can be used normally when VRRP is running between a
+            ICMPv6 redirects can be used normally when VRRP is running among a
             group of routers <xref target="RFC4443"/>.  This allows VRRP to be used in
             environments where the topology is not symmetric, e.g., the VRRP
             routers do not connect to the same destinations.
@@ -1794,8 +1797,8 @@ MAY indicate via network management that an error occurred.
             A VRRP Router acting as either an IPv6 Active Router or Backup Router, SHOULD
             accept Unsolicited Neighbor Advertisements and update the corresponding
             neighbor cache <xref target="RFC4861"/>. Since these are sent to the
-            IPv6 all-nodes multicast address (FF02::1) <xref target="RFC4861"/> or the
-            IPv6 all-routers multicast address (FF02::2), they will be received. Unsolicited
+            IPv6 all-nodes multicast address (ff02::1) <xref target="RFC4861"/> or the
+            IPv6 all-routers multicast address (ff02::2), they will be received. Unsolicited
             Neighbor Advertisements are sent both in the case where the link-level addresses
             change <xref target="RFC4861"/> and for gratuitous neighbor discovery by first hop
             routers <xref target="RFC9131"/>. Additional configuration MAY be required in order
@@ -1840,7 +1843,7 @@ MAY indicate via network management that an error occurred.
             be logged as a warning (subject to rate-limiting).
           </t>
           <t>
-            Since the Skew_Time is inversely proportional to the priority, faster
+            Since the Skew_Time is reduced as priority is increased, faster
             convergence can be obtained by using a higher priority for the preferred
             Backup Router. However, with multiple Backup Routers, the priorities should have
             sufficient differences as previously recommended.
@@ -1980,13 +1983,15 @@ MAY indicate via network management that an error occurred.
         All of these can be done independently of implementing VRRP.
         VRRP does not add to these vulnerabilities and most of these
         vulnerabilities are addressed independently, e.g., SEcure Neighbor Discovery
-        <xref target="RFC3971"/>..
+        <xref target="RFC3971"/>.
       </t>
       <t>
         VRRP includes a mechanism
-        (setting TTL = 255, checking on receipt) that protects against VRRP
-        packets being injected from another remote network.  This limits most
-        vulnerabilities to attacks on the local network.
+        (setting IPv4 TTL or IPv6 Hop Limit to 255 and checking the value on receipt)
+        that protects against VRRP packets being injected from another remote
+        network  <xref target="RFC5082"/>.
+        This limits most vulnerabilities to attacks on the local
+        network.
       </t>
       <t>
         VRRP does not provide any confidentiality.  Confidentiality is not
@@ -2002,6 +2007,11 @@ MAY indicate via network management that an error occurred.
         delegation in the certificates so that Active and Backup Routers advertise
         the same set of subnet prefixes.  However, the Active and Backup Routers
         should have their own key pairs to avoid private key sharing.
+      </t>
+      <t>
+        Also in the context of IPv6 operation, it is RECOMMENDED that the
+        link-level security guidelines in section 2.3 of <xref target="RFC9099"/>
+        be followed.
       </t>
     </section>
     <section anchor="Acknowledgments" numbered="true" toc="default">
@@ -2034,7 +2044,7 @@ MAY indicate via network management that an error occurred.
       <t>
         Thanks to Stewart Bryant, Sasha Vainshtein, Pascal Thubert, Alexander Okonnikov,
         Ben Niven-Jenkins, Tim Chown, Malisa Vucinic, Russ White, Donald Eastlake, Dave Thaler,
-        and Vijay Gurbani for comments on the current document (RFC 5798 BIS).
+        Eric Kline, and Vijay Gurbani for comments on the current document (RFC 5798 BIS).
         Thanks to Gyan Mishra, Paul Congdon, and Jon Rosen for discussions related to the removal
         of legacy technology appendices. Thanks to Dhruv Dhody and Donald Eastlake for
         comments and suggestions for improving the IANA section. Thanks to Sasha Vainshtein
@@ -2064,7 +2074,7 @@ MAY indicate via network management that an error occurred.
       <t>
         In the "Link-Local Scope Multicast Addresses" block of the "IPv6 Multicast Address
         Space Registry" <xref target="RFC3307"/>, IANA has assigned the IPv6 link-local
-        scope multicast address FF02:0:0:0:0:0:0:12 for VRRP for IPv6.
+        scope multicast address ff02:0:0:0:0:0:0:12 for VRRP for IPv6.
       </t>
       <t>
         In the "IANA MAC ADDRESS BLOCK" registry <xref target="I-D.ietf-intarea-rfc7042bis"/>,
@@ -2084,6 +2094,7 @@ MAY indicate via network management that an error occurred.
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4291.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4443.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4861.xml"/>
+    <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5082.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.5771.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
     <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8200.xml"/>
@@ -2128,6 +2139,7 @@ MAY indicate via network management that an error occurred.
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7217.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8064.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8981.xml"/>
+<xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9099.xml"/>
 <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9131.xml"/>
 <reference anchor="NISTIR8366" target="https://doi.org/10.6028/NIST.IR.8366">
   <front>
